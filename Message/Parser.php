@@ -17,7 +17,7 @@ namespace Message;
  */
 class Parser
 {
-    protected $dir = '/home/nepda/.purple/logs';
+    protected $logDir;
 
     /**
      * @param Message[] $messages
@@ -25,7 +25,7 @@ class Parser
      */
     public function parse(array &$messages, \DateTime $minDate = null)
     {
-        $dir = new \DirectoryIterator($this->dir);
+        $dir = new \DirectoryIterator($this->logDir);
         foreach ($dir as $f) {
 
             if ($f->isDir() && $f->getBasename() != '.' && $f->getBasename() != '..') {
@@ -55,7 +55,7 @@ class Parser
                                             continue;
                                         }
                                         $filename = $l->getRealPath();
-                                        echo sprintf('    Parsing logfile %s', $filename) . PHP_EOL;
+                                        #echo sprintf('    Parsing logfile %s', $filename) . PHP_EOL;
                                         $this->parseLog($filename, $messages, $minDate);
                                     }
                                 }
@@ -158,5 +158,31 @@ class Parser
             $messages[] = $entity;
         }
         return $messages;
+    }
+
+    /**
+     * Returns the logDir
+     *
+     * @return string
+     * @see setLogDir
+     * @see $logDir
+     */
+    public function getLogDir()
+    {
+        return $this->logDir;
+    }
+
+    /**
+     * Sets the logDir
+     *
+     * @param string $logDir
+     * @return $this
+     * @see getLogDir
+     * @see $logDir
+     */
+    public function setLogDir(string $logDir)
+    {
+        $this->logDir = $logDir;
+        return $this;
     }
 }

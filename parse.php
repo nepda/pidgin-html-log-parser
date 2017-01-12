@@ -17,6 +17,7 @@ require_once 'Message/Message.php';
 require_once 'Message/Parser.php';
 
 $parser = new Message\Parser();
+$parser->setLogDir('/home/nepda/.purple/logs');
 
 $minDate = null;
 
