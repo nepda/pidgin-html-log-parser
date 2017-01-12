@@ -23,14 +23,25 @@ $groups = $dbHandle->prepare(
 );
 $groups->execute();
 
+$groupAliases = [];
+if (file_exists('group-aliases.json')) {
+    $groupAliases = json_decode(file_get_contents('group-aliases.json'), true);
+}
+$groupDisplayName = function (string $name) use ($groupAliases): string {
+    $name = trim($name);
+    if (!empty($groupAliases[$name])) {
+        return $groupAliases[$name];
+    }
+    return $name;
+};
+
 ?>
     <div style="float:left;width: 300px;font-size: small; border: 1px solid black;">
         <ul>
             <?php
             foreach ($groups->fetchAll() as $group) {
-                echo '<li><a href="?group=' . urlencode(
-                        $group['chat_group']
-                    ) . '">' . $group['chat_group'] . '</a> (' . $group['log_count'] . ')</li>';
+                echo '<li><a href="?group=' . urlencode($group['chat_group']) . '">' .
+                    $groupDisplayName($group['chat_group']) . '</a> (' . $group['log_count'] . ')</li>';
             }
             ?>
         </ul>
@@ -44,7 +55,7 @@ $messageFilter = null;
 
 if (!empty($_GET['group'])) {
     $groupFilter = $_GET['group'];
-    $params['group']= $groupFilter;
+    $params['group'] = $groupFilter;
 }
 if (!empty($_GET['messageFilter'])) {
     $messageFilter = $_GET['messageFilter'];
@@ -74,7 +85,8 @@ $logs->execute($params);
     <div style="margin-left: 320px; border: 1px solid black; font-size: small;">
         <form action="" method="get">
             <input type="hidden" name="group" id="group" value="<?php echo htmlspecialchars($_GET['group']); ?>">
-            <input type="text" name="messageFilter" id="messageFilter" value="<?php echo htmlspecialchars($messageFilter); ?>">
+            <input type="text" name="messageFilter" id="messageFilter"
+                   value="<?php echo htmlspecialchars($messageFilter); ?>">
             <input type="submit" value="Search">
         </form>
         <table border="1" style="font-size: small">
