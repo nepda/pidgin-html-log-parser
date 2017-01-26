@@ -95,16 +95,26 @@ $logs->execute($params);
                 <th>
                     <div style="width:130px;">Date</div>
                 </th>
+                <th>Name</th>
                 <th>Message</th>
             </tr>
             </thead>
             <tbody>
             <?php
             foreach ($logs as $log) {
+                $name = '';
+                $message = nl2br($log['message']);
+
+                if (strpos($message, ': ')) {
+                    $name = substr($message, 0, strpos($message, ': '));
+                    $message = substr($message, strpos($message, ': ')+1);
+                }
+
                 ?>
                 <tr>
                     <td><?php echo date('Y-m-d&\n\b\s\p;H:i:s', $log['date_created']); ?></td>
-                    <td><?php echo nl2br($log['message']); ?></td>
+                    <td><?php echo $name; ?></td>
+                    <td><?php echo $message; ?></td>
                 </tr>
                 <?php
             }
