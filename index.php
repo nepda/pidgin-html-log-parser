@@ -15,11 +15,11 @@ $dbHandle = new \PDO('sqlite:' . $dbFilename);
 
 $groups = $dbHandle->prepare(
     'select 
-        chat_group, 
-        count(*) as log_count 
-    from logs 
+        chat_group,
+        count(*) as log_count
+    from logs
     group by chat_group 
-    order by log_count desc'
+    order by date_created desc'
 );
 $groups->execute();
 
